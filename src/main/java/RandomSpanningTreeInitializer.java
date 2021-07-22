@@ -4,7 +4,7 @@ import it.units.malelab.jgea.representation.tree.Tree;
 import java.util.*;
 
 
-public class RandomSpanningTreeInitializer implements IndependentFactory<Tree<Integer>> {
+public class RandomSpanningTreeInitializer implements IndependentFactory<Tree<TreeContent>> {
 
     private final int nBuildings;
 
@@ -47,19 +47,22 @@ public class RandomSpanningTreeInitializer implements IndependentFactory<Tree<In
         return parents;
     }
 
-    private Tree<Integer> convertArrayToTree(int[] parents) {
-        Map<Integer, Tree<Integer>> parentMap = new HashMap<>();
+    private Tree<TreeContent> convertArrayToTree(int[] parents) {
+        Map<Integer, Tree<TreeContent>> parentMap = new HashMap<>();
         Queue<Integer> queue = new LinkedList<>();
         queue.add(parents.length - 1);
-        Tree<Integer> root = null;
+        Tree<TreeContent> root = null;
         while (!queue.isEmpty()) {
             int idx = queue.remove();
-            Tree<Integer> node = Tree.of(idx);
+            Tree<TreeContent> node = Tree.of(new TreeContent(idx));
             if (root == null) {
                 root = node;
             }
             else {
-                parentMap.get(parents[idx]).addChild(node);
+                Tree<TreeContent> parent = parentMap.get(parents[idx]);
+                parent.addChild(node);
+                node.content().setPathToCenter(parent.content().getPathToCenter() +
+                        ComputerNetworkProblem.getDistance(parent.content().getIndex(), node.content().getIndex()));
             }
             parentMap.put(idx, node);
             for (int i = 0; i < parents.length; ++i) {
@@ -72,7 +75,7 @@ public class RandomSpanningTreeInitializer implements IndependentFactory<Tree<In
     }
 
     @Override
-    public Tree<Integer> build(Random random) {
+    public Tree<TreeContent> build(Random random) {
         int[] parents = this.randomSpanningTree(random);
         return this.convertArrayToTree(parents);
     }

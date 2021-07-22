@@ -5,13 +5,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 
-public class TreeIterable implements Iterable<Tree<Integer>> {
+public class TreeIterable implements Iterable<Tree<TreeContent>> {
 
-    private static class TreeIterator implements Iterator<Tree<Integer>> {
+    private static class TreeIterator implements Iterator<Tree<TreeContent>> {
 
-        private final Queue<Tree<Integer>> queue;
+        private final Queue<Tree<TreeContent>> queue;
 
-        public TreeIterator(Tree<Integer> root) {
+        public TreeIterator(Tree<TreeContent> root) {
             this.queue = new LinkedList<>();
             this.queue.add(root);
         }
@@ -22,8 +22,8 @@ public class TreeIterable implements Iterable<Tree<Integer>> {
         }
 
         @Override
-        public Tree<Integer> next() {
-            Tree<Integer> next = this.queue.remove();
+        public Tree<TreeContent> next() {
+            Tree<TreeContent> next = this.queue.remove();
             next.forEach(this.queue::add);
             return next;
         }
@@ -32,10 +32,10 @@ public class TreeIterable implements Iterable<Tree<Integer>> {
 
     private final TreeIterator iterator;
 
-    public TreeIterable(Tree<Integer> root) { this.iterator = new TreeIterator(root); }
+    public TreeIterable(Tree<TreeContent> root) { this.iterator = new TreeIterator(root); }
 
     @Override
-    public Iterator<Tree<Integer>> iterator() {
+    public Iterator<Tree<TreeContent>> iterator() {
         return this.iterator;
     }
 
