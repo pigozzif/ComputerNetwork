@@ -10,9 +10,11 @@
 
     <dependencies>
         <dependency>
-            <groupId>it.units.malelab</groupId>
+            <groupId>eu.sigevo</groupId>
             <artifactId>JGEA</artifactId>
             <version>1.7.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/JGEA.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
