@@ -11,13 +11,11 @@ public class MoveOperator implements Mutation<Tree<TreeContent>> {
         private Tree<TreeContent> source;
         private Tree<TreeContent> oldParent;
         private Tree<TreeContent> newParent;
-        private Tree<TreeContent> root;
 
-        public Move(Tree<TreeContent> s, Tree<TreeContent> o, Tree<TreeContent> n, Tree<TreeContent> r) {
+        public Move(Tree<TreeContent> s, Tree<TreeContent> o, Tree<TreeContent> n) {
             this.source = s;
             this.oldParent = o;
             this.newParent = n;
-            this.root = r;
         }
 
         public void apply() {
@@ -27,9 +25,9 @@ public class MoveOperator implements Mutation<Tree<TreeContent>> {
         }
 
         private void updateShortestPaths() {
-            for (Tree<TreeContent> node : new TreeIterable(this.root)) {
-                node.content().setPathToCenter(ComputerNetworkFitnessFunction.getShortestPath(node)/*node.parent().content().getPathToCenter() +
-                        ComputerNetworkProblem.getDistance(node.content().getIndex(), node.parent().content().getIndex())*/);
+            for (Tree<TreeContent> node : new TreeIterable(this.source)) {
+                node.content().setPathToCenter(node.parent().content().getPathToCenter() +
+                            ComputerNetworkProblem.getDistance(node.content().getIndex(), node.parent().content().getIndex()));
             }
         }
 
@@ -51,11 +49,11 @@ public class MoveOperator implements Mutation<Tree<TreeContent>> {
                 for (int i = 0; i < node.parent().nChildren(); ++i) {
                     Tree<TreeContent> child = node.parent().child(i);
                     if (!child.equals(node)) {
-                        ans.add(new Move(node, node.parent(), child, tree));
+                        ans.add(new Move(node, node.parent(), child));
                     }
                 }
                 if (node.parent().parent() != null) {
-                    ans.add(new Move(node, node.parent(), node.parent().parent(), tree));
+                    ans.add(new Move(node, node.parent(), node.parent().parent()));
                 }
             }
         }

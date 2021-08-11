@@ -24,8 +24,8 @@ public class TreeContent {
 
     public static Tree<TreeContent> copyTree(Tree<TreeContent> other) {
         Tree<TreeContent> t = Tree.of(new TreeContent(other.content().getIndex(), other.content().getPathToCenter()));
-        for (Tree<TreeContent> child : other) {
-            t.addChild(copyTree(child));
+        for (int i = 0; i < other.nChildren(); ++i) {
+            t.addChild(copyTree(other.child(i)));
         }
         return t;
     }
@@ -41,6 +41,11 @@ public class TreeContent {
     @Override
     public int hashCode() {
         return Objects.hash(index);
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.index);
     }
 
 }
