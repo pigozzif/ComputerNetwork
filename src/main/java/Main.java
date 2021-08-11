@@ -54,7 +54,7 @@ public class Main extends Worker {
     private void evolve() throws IOException, ExecutionException, InterruptedException {
         Listener.Factory<Event<?, ?, ? extends Double>> factory = this.createListenerFactory();
         ComputerNetworkProblem problem = new ComputerNetworkProblem(inputFileName, 1.0, 1.0);
-        Evolver<Tree<Integer>, Tree<Integer>, Double> evolver = new StandardEvolver<>(Function.identity(),
+        Evolver<Tree<TreeContent>, Tree<TreeContent>, Double> evolver = new StandardEvolver<>(Function.identity(),
                 new RandomSpanningTreeInitializer(problem.getNBuildings()),
                 PartialComparator.from(Double.class).comparing(Individual::getFitness),
                 200,
@@ -64,7 +64,7 @@ public class Main extends Worker {
                 200,
                 true,
                 false);
-        Collection<Tree<Integer>> solutions = evolver.solve(problem.getFitnessFunction(),
+        Collection<Tree<TreeContent>> solutions = evolver.solve(problem.getFitnessFunction(),
                 new Iterations(1000),
                 new Random(Integer.parseInt(seed)),
                 this.executorService,
@@ -81,7 +81,7 @@ public class Main extends Worker {
                 uniqueness().of(each(solution())).of(all()),
                 uniqueness().of(each(fitness())).of(all())),
                 List.of(fitness().reformat("%5.3f").of(best())),
-                List.of(f("print", x -> ((Individual<Tree<Integer>, Tree<Integer>, Double>) x).getSolution().toString()).of(best())))), new File(outputFileName));
+                List.of(f("print", x -> ((Individual<Tree<TreeContent>, Tree<TreeContent>, Double>) x).getSolution().toString()).of(best())))), new File(outputFileName));
     }
 
 }
