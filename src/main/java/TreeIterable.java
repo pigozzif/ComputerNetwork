@@ -24,7 +24,9 @@ public class TreeIterable implements Iterable<Tree<Integer>> {
         @Override
         public Tree<Integer> next() {
             Tree<Integer> next = this.queue.remove();
-            next.forEach(this.queue::add);
+            for (int i = 0; i < next.nChildren(); ++i) {
+                this.queue.add(next.child(i));
+            }
             return next;
         }
 
