@@ -4,15 +4,15 @@ import it.units.malelab.jgea.representation.tree.Tree;
 import java.util.*;
 
 
-public class MoveOperator implements Mutation<Tree<TreeContent>> {
+public class MoveOperator implements Mutation<Tree<Integer>> {
 
     private static class Move {
 
-        private Tree<TreeContent> source;
-        private Tree<TreeContent> oldParent;
-        private Tree<TreeContent> newParent;
+        public Tree<Integer> source;
+        public Tree<Integer> oldParent;
+        public Tree<Integer> newParent;
 
-        public Move(Tree<TreeContent> s, Tree<TreeContent> o, Tree<TreeContent> n) {
+        public Move(Tree<Integer> s, Tree<Integer> o, Tree<Integer> n) {
             this.source = s;
             this.oldParent = o;
             this.newParent = n;
@@ -21,33 +21,25 @@ public class MoveOperator implements Mutation<Tree<TreeContent>> {
         public void apply() {
             this.oldParent.removeChild(this.source);
             this.newParent.addChild(this.source);
-            this.updateShortestPaths();
-        }
-
-        private void updateShortestPaths() {
-            for (Tree<TreeContent> node : new TreeIterable(this.source)) {
-                node.content().setPathToCenter(node.parent().content().getPathToCenter() +
-                            ComputerNetworkProblem.getDistance(node.content().getIndex(), node.parent().content().getIndex()));
-            }
         }
 
     }
 
     @Override
-    public Tree<TreeContent> mutate(Tree<TreeContent> tree, Random random) {
-        Tree<TreeContent> newBorn = TreeContent.copyTree(tree);
+    public Tree<Integer> mutate(Tree<Integer> tree, Random random) {
+        Tree<Integer> newBorn = Tree.copyOf(tree);
         List<Move> moves = getNeighbourhood(newBorn);
         Move move = moves.get(random.nextInt(moves.size()));
         move.apply();
         return newBorn;
     }
 
-    public static List<Move> getNeighbourhood(Tree<TreeContent> tree) {
+    public static List<Move> getNeighbourhood(Tree<Integer> tree) {
         List<Move> ans = new ArrayList<>();
-        for (Tree<TreeContent> node : new TreeIterable(tree)) {
+        for (Tree<Integer> node : new TreeIterable(tree)) {
             if (node.parent() != null) {
                 for (int i = 0; i < node.parent().nChildren(); ++i) {
-                    Tree<TreeContent> child = node.parent().child(i);
+                    Tree<Integer> child = node.parent().child(i);
                     if (!child.equals(node)) {
                         ans.add(new Move(node, node.parent(), child));
                     }

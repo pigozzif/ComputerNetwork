@@ -3,7 +3,7 @@ import it.units.malelab.jgea.representation.tree.Tree;
 import java.util.function.Function;
 
 
-public class ComputerNetworkFitnessFunction implements Function<Tree<TreeContent>, Double> {
+public class ComputerNetworkFitnessFunction implements Function<Tree<Integer>, Double> {
 
     private final ComputerNetworkProblem problem;
 
@@ -11,23 +11,23 @@ public class ComputerNetworkFitnessFunction implements Function<Tree<TreeContent
         this.problem = p;
     }
 
-    public static double getShortestPath(Tree<TreeContent> node) {
+    private double getShortestPath(Tree<Integer> node) {
         double cost = 0.0;
-        Tree<TreeContent> currentNode = node;
+        Tree<Integer> currentNode = node;
         while (currentNode.parent() != null) {
-            cost += ComputerNetworkProblem.getDistance(currentNode.content().getIndex(), currentNode.parent().content().getIndex());
+            cost += this.problem.getDistance(currentNode.content(), currentNode.parent().content());
             currentNode = currentNode.parent();
         }
         return cost;
     }
 
     @Override
-    public Double apply(Tree<TreeContent> tree) {
+    public Double apply(Tree<Integer> tree) {
         double fitness = 0.0;
-        for (Tree<TreeContent> node : new TreeIterable(tree)) {
+        for (Tree<Integer> node : new TreeIterable(tree)) {
             if (node.parent() != null) {
-                fitness += problem.getTrenchCost() * ComputerNetworkProblem.getDistance(node.content().getIndex(), node.parent().content().getIndex());
-                fitness += problem.getCableCost() * node.content().getPathToCenter();
+                fitness += problem.getTrenchCost() * this.problem.getDistance(node.content(), node.parent().content());
+                fitness += problem.getCableCost() * this.getShortestPath(node);
             }
         }
         return fitness;
